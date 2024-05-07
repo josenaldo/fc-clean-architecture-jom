@@ -1,3 +1,4 @@
+import { createSequelize } from '@/domain/@shared/test/test.utils'
 import Customer from '@/domain/customer/entity/customer'
 import Address from '@/domain/customer/value-object/address'
 import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
@@ -9,14 +10,7 @@ describe('Customer repository unit tests', () => {
   let sequelize: Sequelize
 
   beforeEach(async () => {
-    sequelize = new Sequelize({
-      dialect: 'sqlite',
-      storage: ':memory:',
-      logging: false,
-      sync: {
-        force: true,
-      },
-    })
+    sequelize = createSequelize()
 
     sequelize.addModels([CustomerModel])
     await sequelize.sync()

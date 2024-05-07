@@ -1,3 +1,4 @@
+import { createSequelize } from '@/domain/@shared/test/test.utils'
 import Order from '@/domain/checkout/entity/order'
 import OrderItem from '@/domain/checkout/entity/order_item'
 import Customer from '@/domain/customer/entity/customer'
@@ -20,14 +21,7 @@ describe('Order Repository unit tests', () => {
   let product2: Product
 
   beforeEach(async () => {
-    sequelize = new Sequelize({
-      dialect: 'sqlite',
-      storage: ':memory:',
-      logging: false,
-      sync: {
-        force: true,
-      },
-    })
+    sequelize = createSequelize()
 
     sequelize.addModels([
       CustomerModel,

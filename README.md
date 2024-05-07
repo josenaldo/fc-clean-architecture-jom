@@ -1,4 +1,8 @@
-# DDD Patterns
+# Clean Architecture
+
+This repository contains the implementation of the Clean Architecture pattern using TypeScript. It's based on the repository for another course, but it's being adapted to use the Clean Architecture pattern.
+
+Original repository: [fc-ddd-patterns](https://github.com/josenaldo/fc-ddd-patterns-jom)
 
 ## Repository creation steps
 
@@ -153,5 +157,3 @@ npx tsc
 - [Node.js](https://nodejs.org/)
 - [NPM](https://www.npmjs.com/)
 - [Git](https://git-scm.com/)
--
-

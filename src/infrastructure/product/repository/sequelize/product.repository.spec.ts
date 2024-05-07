@@ -1,3 +1,4 @@
+import { createSequelize } from '@/domain/@shared/test/test.utils'
 import Product from '@/domain/product/entity/product'
 import ProductModel from '@/infrastructure/product/repository/sequelize/product.model'
 import ProductRepository from '@/infrastructure/product/repository/sequelize/product.repository'
@@ -8,14 +9,7 @@ describe('Product repository unit tests', () => {
   let sequelize: Sequelize
 
   beforeEach(async () => {
-    sequelize = new Sequelize({
-      dialect: 'sqlite',
-      storage: ':memory:',
-      logging: false,
-      sync: {
-        force: true,
-      },
-    })
+    sequelize = createSequelize()
 
     sequelize.addModels([ProductModel])
     await sequelize.sync()

@@ -56,4 +56,23 @@ describe('Test find customer usecase', () => {
     }
     expect(output).toStrictEqual(expectedOutput)
   })
+
+  it('should throw and error when customer not found', async () => {
+    // Arrange - Given
+    const customerRepository = MockRepository()
+    customerRepository.find = jest
+      .fn()
+      .mockRejectedValue(new Error('Customer not found'))
+    const usecase = new FindCustomerUseCase(customerRepository)
+
+    const input: InputFindCustomerDto = {
+      id: '123',
+    }
+
+    // Act - When
+    const output = usecase.execute(input)
+
+    // Assert - Then
+    expect(output).rejects.toThrow('Customer not found')
+  })
 })

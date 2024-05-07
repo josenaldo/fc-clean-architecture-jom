@@ -55,9 +55,23 @@ describe('Test find customer usecase', () => {
     }
 
     // Act - When
-    const output: OutputFindCustomerDto  = await usecase.execute(input)
+    const output: OutputFindCustomerDto = await usecase.execute(input)
 
     // Assert - Then
     expect(output).toStrictEqual(expectedOutput)
+  })
+
+  it('should not find a customer', () => {
+    // Arrange - Given
+    const usecase = new FindCustomerUseCase(customerRepository)
+    const input: InputFindCustomerDto = {
+      id: '1234',
+    }
+
+    // Act - When
+    const output = usecase.execute(input)
+
+    // Assert - Then
+    expect(output).rejects.toThrow('Customer not found')
   })
 })

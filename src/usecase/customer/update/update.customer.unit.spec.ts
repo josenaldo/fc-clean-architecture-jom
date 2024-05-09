@@ -67,7 +67,7 @@ describe('Test update customer use case', () => {
     expect(output).rejects.toThrow('Name is required')
   })
 
-  it('should throw an error when new address is empty', () => {
+  it('should throw an error when street is empty', () => {
     // Arrange - Given
     const customerRepository = MockRepository()
     customerRepository.find.mockReturnValue(Promise.resolve(customer))
@@ -77,9 +77,73 @@ describe('Test update customer use case', () => {
     const inputEmptyAddress = {
       ...input,
       address: {
+        ...input.address,
         street: '',
+      },
+    }
+
+    // Act - When
+    const output = customerUpdateUseCase.execute(inputEmptyAddress)
+
+    // Assert - Then
+    expect(output).rejects.toThrow('Street is required')
+  })
+
+  it('should throw an error when number is empty', () => {
+    // Arrange - Given
+    const customerRepository = MockRepository()
+    customerRepository.find.mockReturnValue(Promise.resolve(customer))
+
+    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
+
+    const inputEmptyAddress = {
+      ...input,
+      address: {
+        ...input.address,
         number: '',
+      },
+    }
+
+    // Act - When
+    const output = customerUpdateUseCase.execute(inputEmptyAddress)
+
+    // Assert - Then
+    expect(output).rejects.toThrow('Number is required')
+  })
+
+  it('should throw an error when zipCode is empty', () => {
+    // Arrange - Given
+    const customerRepository = MockRepository()
+    customerRepository.find.mockReturnValue(Promise.resolve(customer))
+
+    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
+
+    const inputEmptyAddress = {
+      ...input,
+      address: {
+        ...input.address,
         zipCode: '',
+      },
+    }
+
+    // Act - When
+    const output = customerUpdateUseCase.execute(inputEmptyAddress)
+
+    // Assert - Then
+    expect(output).rejects.toThrow('Zip code is required')
+  })
+
+  it('should throw an error when city is empty', () => {
+    // Arrange - Given
+    const customerRepository = MockRepository()
+    customerRepository.find.mockReturnValue(Promise.resolve(customer))
+
+    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
+
+    const inputEmptyAddress = {
+      ...input,
+      address: {
+        ...input.address,
         city: '',
       },
     }
@@ -88,6 +152,6 @@ describe('Test update customer use case', () => {
     const output = customerUpdateUseCase.execute(inputEmptyAddress)
 
     // Assert - Then
-    expect(output).rejects.toThrow('Address is required')
+    expect(output).rejects.toThrow('City is required')
   })
 })

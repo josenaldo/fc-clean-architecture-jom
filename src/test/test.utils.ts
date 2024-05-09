@@ -10,3 +10,12 @@ export function createSequelize(): Sequelize {
     },
   })
 }
+
+export const MockRepository = () => {
+  return {
+    find: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    findAll: jest.fn(),
+  }
+}

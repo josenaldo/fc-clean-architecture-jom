@@ -1,8 +1,8 @@
-import { createSequelize } from '@/domain/@shared/test/test.utils'
 import Customer from '@/domain/customer/entity/customer'
 import Address from '@/domain/customer/value-object/address'
 import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
 import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
+import { createSequelize } from '@/test/test.utils'
 import {
   InputFindCustomerDto,
   OutputFindCustomerDto,

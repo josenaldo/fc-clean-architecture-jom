@@ -1,5 +1,6 @@
 import Customer from '@/domain/customer/entity/customer'
 import Address from '@/domain/customer/value-object/address'
+import { MockRepository } from '@/test/test.utils'
 import {
   InputFindCustomerDto,
   OutputFindCustomerDto,
@@ -8,15 +9,6 @@ import { FindCustomerUseCase } from '@/usecase/customer/find/find.customer.useca
 
 describe('Test find customer usecase', () => {
   let customer: Customer
-
-  const MockRepository = () => {
-    return {
-      find: jest.fn().mockResolvedValue(customer),
-      create: jest.fn(),
-      update: jest.fn(),
-      findAll: jest.fn(),
-    }
-  }
 
   beforeEach(async () => {
     customer = new Customer('123', 'John Doe')
@@ -34,6 +26,7 @@ describe('Test find customer usecase', () => {
   it('should find a customer', async () => {
     // Arrange - Given
     const customerRepository = MockRepository()
+    customerRepository.find = jest.fn().mockResolvedValue(customer)
     const usecase = new FindCustomerUseCase(customerRepository)
 
     const input: InputFindCustomerDto = {

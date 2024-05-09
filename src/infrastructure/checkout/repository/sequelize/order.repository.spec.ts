@@ -1,4 +1,3 @@
-import { createSequelize } from '@/domain/@shared/test/test.utils'
 import Order from '@/domain/checkout/entity/order'
 import OrderItem from '@/domain/checkout/entity/order_item'
 import Customer from '@/domain/customer/entity/customer'
@@ -11,6 +10,7 @@ import CustomerModel from '@/infrastructure/customer/repository/sequelize/custom
 import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
 import ProductModel from '@/infrastructure/product/repository/sequelize/product.model'
 import ProductRepository from '@/infrastructure/product/repository/sequelize/product.repository'
+import { createSequelize } from '@/test/test.utils'
 
 import { Sequelize } from 'sequelize-typescript'
 

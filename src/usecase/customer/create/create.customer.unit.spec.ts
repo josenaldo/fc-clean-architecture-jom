@@ -1,15 +1,7 @@
+import { MockRepository } from '@/test/test.utils'
 import CreateCustomerUseCase from '@/usecase/customer/create/create.customer.usecase'
 
 describe('Test create customer usecase', () => {
-  const MockRepository = () => {
-    return {
-      find: jest.fn(),
-      findAll: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-    }
-  }
-
   it('should create a customer', async () => {
     // Arrange - Given
     const customerRepository = MockRepository()

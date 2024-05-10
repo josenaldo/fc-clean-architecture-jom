@@ -1,6 +1,8 @@
 import ProductInterface from '@/domain/product/entity/product.interface'
+import { ProductType } from '@/domain/product/entity/product_type'
 
 export default class Product implements ProductInterface {
+  static readonly TYPE: ProductType = ProductType.A
   private _id: string
   private _name: string
   private _price: number

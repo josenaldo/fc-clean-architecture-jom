@@ -3,17 +3,18 @@ import { v4 as uuid } from 'uuid'
 import Product from '@/domain/product/entity/product'
 import ProductInterface from '@/domain/product/entity/product.interface'
 import ProductB from '@/domain/product/entity/product_b'
+import { ProductType } from '@/domain/product/entity/product_type'
 
 export default class ProductFactory {
   public static create(
-    type: string,
+    type: ProductType,
     name: string,
     price: number
   ): ProductInterface {
     switch (type) {
-      case 'a':
+      case Product.TYPE:
         return new Product(uuid(), name, price)
-      case 'b':
+      case ProductB.TYPE:
         return new ProductB(uuid(), name, price)
       default:
         throw new Error('Invalid product type')

@@ -7,7 +7,7 @@ import {
 } from '@/usecase/customer/find/find.customer.dto'
 import { FindCustomerUseCase } from '@/usecase/customer/find/find.customer.usecase'
 
-describe('Test find customer usecase', () => {
+describe('Find customer use case unit tests', () => {
   let customer: Customer
 
   beforeEach(async () => {

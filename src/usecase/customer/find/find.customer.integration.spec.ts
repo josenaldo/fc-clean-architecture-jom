@@ -1,4 +1,5 @@
 import Customer from '@/domain/customer/entity/customer'
+import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
 import Address from '@/domain/customer/value-object/address'
 import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
 import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
@@ -10,9 +11,9 @@ import {
 import { FindCustomerUseCase } from '@/usecase/customer/find/find.customer.usecase'
 import { Sequelize } from 'sequelize-typescript'
 
-describe('Test find customer usecase', () => {
+describe('Find customer use case integration tests', () => {
   let sequelize: Sequelize
-  let customerRepository: CustomerRepository
+  let customerRepository: CustomerRepositoryInterface
 
   beforeEach(async () => {
     sequelize = createSequelize()

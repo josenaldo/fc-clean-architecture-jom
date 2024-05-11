@@ -1,10 +1,29 @@
-import { MockRepository } from '@/test/test.utils'
+import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
+import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
+import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
+import { createSequelize } from '@/test/test.utils'
 import CreateCustomerUseCase from '@/usecase/customer/create/create.customer.usecase'
+import { Sequelize } from 'sequelize-typescript'
 
-describe('Create customer use case unit tests', () => {
+describe('Create customer use case integration tests', () => {
+  let sequelize: Sequelize
+  let customerRepository: CustomerRepositoryInterface
+
+  beforeEach(async () => {
+    sequelize = createSequelize()
+
+    sequelize.addModels([CustomerModel])
+    await sequelize.sync()
+
+    customerRepository = new CustomerRepository()
+  })
+
+  afterEach(async () => {
+    await sequelize.close()
+  })
+
   it('should create a customer', async () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
     const usecase = new CreateCustomerUseCase(customerRepository)
     const input = {
       name: 'John Doe',
@@ -20,19 +39,6 @@ describe('Create customer use case unit tests', () => {
     const output = await usecase.execute(input)
 
     // Assert - Then
-    expect(customerRepository.create).toHaveBeenCalledTimes(1)
-    expect(customerRepository.create).toHaveBeenLastCalledWith(
-      expect.objectContaining({
-        _id: expect.any(String),
-        _name: 'John Doe',
-        _address: expect.objectContaining({
-          _street: 'Rua Jose Lelis Franca',
-          _number: '1008',
-          _zipCode: '38408234',
-          _city: 'Uberlândia',
-        }),
-      })
-    )
     expect(output).toEqual({
       id: expect.any(String),
       name: 'John Doe',
@@ -47,7 +53,6 @@ describe('Create customer use case unit tests', () => {
 
   it('should throw an erro when name is missing', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
     const usecase = new CreateCustomerUseCase(customerRepository)
     const input = {
       name: '',

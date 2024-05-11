@@ -1,25 +1,45 @@
+import Customer from '@/domain/customer/entity/customer'
 import CustomerFactory from '@/domain/customer/factory/customer.factory'
+import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
 import Address from '@/domain/customer/value-object/address'
-import { MockRepository } from '@/test/test.utils'
+import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
+import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
+import { createSequelize } from '@/test/test.utils'
 import ListCustomerUseCase from '@/usecase/customer/list/list.customers.usecase'
+import { Sequelize } from 'sequelize-typescript'
 
 describe('List customers use case unit tests', () => {
-  const customer1 = CustomerFactory.createWithAddress(
-    'John Doe',
-    new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
-  )
+  let sequelize: Sequelize
+  let customerRepository: CustomerRepositoryInterface
+  let customer1: Customer
+  let customer2: Customer
 
-  const customer2 = CustomerFactory.createWithAddress(
-    'Jane Doe',
-    new Address('Rua Jose Lelis Franca', '1020', '38408234', 'Uberlândia')
-  )
+  beforeEach(async () => {
+    sequelize = createSequelize()
+
+    sequelize.addModels([CustomerModel])
+    await sequelize.sync()
+
+    customerRepository = new CustomerRepository()
+  })
+
+  afterEach(async () => {
+    await sequelize.close()
+  })
 
   it('should list the customers', async () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.findAll.mockReturnValue(
-      Promise.resolve([customer1, customer2])
+    customer1 = CustomerFactory.createWithAddress(
+      'John Doe',
+      new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
     )
+    customerRepository.create(customer1)
+
+    customer2 = CustomerFactory.createWithAddress(
+      'Jane Doe',
+      new Address('Rua Jose Lelis Franca', '1020', '38408234', 'Uberlândia')
+    )
+    customerRepository.create(customer2)
 
     const listCustomerUseCase = new ListCustomerUseCase(customerRepository)
 
@@ -55,11 +75,8 @@ describe('List customers use case unit tests', () => {
     })
   })
 
-  it('should return an empty list when there are no customers', async () => {
+  it('should return a empty list when there is no customers', async () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.findAll.mockReturnValue(Promise.resolve([]))
-
     const listCustomerUseCase = new ListCustomerUseCase(customerRepository)
 
     // Act - When
@@ -68,5 +85,6 @@ describe('List customers use case unit tests', () => {
     // Assert - Then
     expect(output.customers).toBeDefined()
     expect(output.customers).toHaveLength(0)
+    expect(output).toEqual({ customers: [] })
   })
 })

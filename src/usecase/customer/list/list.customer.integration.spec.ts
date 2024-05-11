@@ -8,7 +8,7 @@ import { createSequelize } from '@/test/test.utils'
 import ListCustomerUseCase from '@/usecase/customer/list/list.customers.usecase'
 import { Sequelize } from 'sequelize-typescript'
 
-describe('List customers use case unit tests', () => {
+describe('List customers use case integration tests', () => {
   let sequelize: Sequelize
   let customerRepository: CustomerRepositoryInterface
   let customer1: Customer

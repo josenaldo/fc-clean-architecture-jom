@@ -10,6 +10,9 @@ export default class ProductModel extends Model {
   declare id: string
 
   @Column({ allowNull: false })
+  declare type: string
+
+  @Column({ allowNull: false })
   declare name: string
 
   @Column({ allowNull: false })

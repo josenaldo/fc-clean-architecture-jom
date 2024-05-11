@@ -1,4 +1,7 @@
 import Product from '@/domain/product/entity/product'
+import ProductInterface from '@/domain/product/entity/product.interface'
+import { ProductType } from '@/domain/product/entity/product_type'
+import ProductFactory from '@/domain/product/factory/product.factory'
 import ProductModel from '@/infrastructure/product/repository/sequelize/product.model'
 import ProductRepository from '@/infrastructure/product/repository/sequelize/product.repository'
 import { createSequelize } from '@/test/test.utils'
@@ -19,39 +22,103 @@ describe('Product repository unit tests', () => {
     await sequelize.close()
   })
 
-  it('should create a product', async () => {
+  it('should create a product type A', async () => {
     const productRepository: ProductRepository = new ProductRepository()
-    const product: Product = new Product('1', 'Product 1', 100)
+    const product: ProductInterface = ProductFactory.create(
+      ProductType.A,
+      'Product 1',
+      100
+    )
+
+    const id = product.id
 
     await productRepository.create(product)
 
-    const productModel = await ProductModel.findOne({ where: { id: '1' } })
+    const productModel = await ProductModel.findOne({ where: { id: id } })
 
     expect(productModel).not.toBeNull()
     expect(productModel.toJSON()).toStrictEqual({
-      id: '1',
+      id: id,
       name: 'Product 1',
       price: 100,
+      type: ProductType.A,
     })
   })
 
-  it('should update a product', async () => {
+  it('should create a product type B', async () => {
     const productRepository: ProductRepository = new ProductRepository()
-    const product: Product = new Product('1', 'Product 1', 100)
+    const product: ProductInterface = ProductFactory.create(
+      ProductType.B,
+      'Product 2',
+      200
+    )
+
+    const id = product.id
+
+    await productRepository.create(product)
+
+    const productModel = await ProductModel.findOne({ where: { id: id } })
+
+    expect(productModel).not.toBeNull()
+    expect(productModel.toJSON()).toStrictEqual({
+      id: id,
+      name: 'Product 2',
+      price: 400,
+      type: ProductType.B,
+    })
+  })
+
+  it('should update a product type A', async () => {
+    const productRepository: ProductRepository = new ProductRepository()
+    const product: ProductInterface = ProductFactory.create(
+      ProductType.A,
+      'Product 1',
+      100
+    )
+    const id = product.id
 
     await productRepository.create(product)
 
     product.changePrice(200)
     product.changeName('Product 1 Updated')
+
     await productRepository.update(product)
 
-    const productModel = await ProductModel.findOne({ where: { id: '1' } })
+    const productModel = await ProductModel.findOne({ where: { id: id } })
 
     expect(productModel).not.toBeNull()
     expect(productModel.toJSON()).toStrictEqual({
-      id: '1',
+      id: id,
       name: 'Product 1 Updated',
       price: 200,
+      type: ProductType.A,
+    })
+  })
+
+  it('should update a product type B', async () => {
+    const productRepository: ProductRepository = new ProductRepository()
+    const product: ProductInterface = ProductFactory.create(
+      ProductType.B,
+      'Product 2',
+      200
+    )
+    const id = product.id
+
+    await productRepository.create(product)
+
+    product.changePrice(400)
+    product.changeName('Product 2 Updated')
+
+    await productRepository.update(product)
+
+    const productModel = await ProductModel.findOne({ where: { id: id } })
+
+    expect(productModel).not.toBeNull()
+    expect(productModel.toJSON()).toStrictEqual({
+      id: id,
+      name: 'Product 2 Updated',
+      price: 800,
+      type: ProductType.B,
     })
   })
 

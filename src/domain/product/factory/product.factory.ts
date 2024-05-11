@@ -20,4 +20,22 @@ export default class ProductFactory {
         throw new Error('Invalid product type')
     }
   }
+
+  public static restore(
+    type: string,
+    id: string,
+    name: string,
+    price: number
+  ): ProductInterface {
+    const productType = type as ProductType
+
+    switch (productType) {
+      case Product.TYPE:
+        return new Product(id, name, price)
+      case ProductB.TYPE:
+        return new ProductB(id, name, price / 2)
+      default:
+        throw new Error('Invalid product type')
+    }
+  }
 }

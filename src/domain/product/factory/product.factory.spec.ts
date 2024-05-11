@@ -29,4 +29,30 @@ describe('Product Factory Unit Tests', () => {
     expect(product.price).toBe(4)
     expect(product).toBeInstanceOf(ProductB)
   })
+
+  it('should restore a product type A', () => {
+    // Arrange - Given
+
+    // Act - When
+    const product = ProductFactory.restore(ProductType.A, '1', 'Product 1', 1)
+
+    // Assert - Then
+    expect(product.id).toBe('1')
+    expect(product.name).toBe('Product 1')
+    expect(product.price).toBe(1)
+    expect(product).toBeInstanceOf(Product)
+  })
+
+  it('should restore a product type B', () => {
+    // Arrange - Given
+
+    // Act - When
+    const product = ProductFactory.restore(ProductType.B, '2', 'Product 2', 2)
+
+    // Assert - Then
+    expect(product.id).toBe('2')
+    expect(product.name).toBe('Product 2')
+    expect(product.price).toBe(2)
+    expect(product).toBeInstanceOf(ProductB)
+  })
 })

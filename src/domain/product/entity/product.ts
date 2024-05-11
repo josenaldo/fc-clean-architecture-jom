@@ -48,6 +48,10 @@ export default class Product implements ProductInterface {
     return this._price
   }
 
+  get type(): ProductType {
+    return Product.TYPE
+  }
+
   changeName(name: string) {
     this._name = name
     this.validate()

@@ -12,7 +12,7 @@ export default class FindProductUseCase {
   }
 
   async execute(input: InputFindProductDto): Promise<OutputFindProductDto> {
-    if (input.id === undefined || input.id === '' || input.id === null) {
+    if (!input.id) {
       throw new Error('Id is required for finding a product')
     }
 

@@ -65,4 +65,25 @@ describe('Find customer use case unit tests', () => {
     // Assert - Then
     expect(output).rejects.toThrow('Customer not found')
   })
+
+  it.each`
+    id           | label         | expected
+    ${null}      | ${'null'}     | ${'Id is required for finding a customer'}
+    ${undefined} | ${'unefined'} | ${'Id is required for finding a customer'}
+    ${''}        | ${'empty'}    | ${'Id is required for finding a customer'}
+  `(
+    'should throw an error when id is $label',
+    async ({ id, label, expected }) => {
+      // Arrange - Given
+      const input: InputFindCustomerDto = {
+        id: id,
+      }
+
+      // Act - When
+      const output = usecase.execute(input)
+
+      // Assert - Then
+      await expect(output).rejects.toThrow(expected)
+    }
+  )
 })

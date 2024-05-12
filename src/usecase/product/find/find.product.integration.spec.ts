@@ -14,27 +14,28 @@ import { Sequelize } from 'sequelize-typescript'
 
 describe('Find product usecase unit tests ', () => {
   let sequelize: Sequelize
+  let productRepository: ProductRepositoryInterface
+  let usecase: FindProductUseCase
   let product_a: ProductInterface
   let product_b: ProductInterface
-  let productRepository: ProductRepositoryInterface
 
   beforeEach(async () => {
     sequelize = createSequelize()
     sequelize.addModels([ProductModel])
     await sequelize.sync()
 
+    productRepository = new ProductRepository()
+    usecase = new FindProductUseCase(productRepository)
+
     product_a = ProductFactory.create(ProductType.A, 'Product A', 100)
     product_b = ProductFactory.create(ProductType.B, 'Product B', 200)
 
-    productRepository = new ProductRepository()
     await productRepository.create(product_a)
     await productRepository.create(product_b)
   })
 
   it('should find a product type A', async () => {
     // Arrange - Given
-    const usecase = new FindProductUseCase(productRepository)
-
     const input: InputFindProductDto = {
       id: product_a.id,
     }
@@ -55,8 +56,6 @@ describe('Find product usecase unit tests ', () => {
 
   it('should find a product type B', async () => {
     // Arrange - Given
-    const usecase = new FindProductUseCase(productRepository)
-
     const input: InputFindProductDto = {
       id: product_b.id,
     }
@@ -77,8 +76,6 @@ describe('Find product usecase unit tests ', () => {
 
   it('should throw an error when product not found', async () => {
     // Arrange - Given
-    const usecase = new FindProductUseCase(productRepository)
-
     const input: InputFindProductDto = {
       id: '123',
     }
@@ -99,7 +96,6 @@ describe('Find product usecase unit tests ', () => {
     'should throw an error when id is $label',
     async ({ id, label, expected }) => {
       // Arrange - Given
-      const usecase = new FindProductUseCase(productRepository)
 
       const input: InputFindProductDto = {
         id: id,

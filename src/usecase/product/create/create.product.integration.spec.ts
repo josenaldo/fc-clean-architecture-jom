@@ -8,15 +8,30 @@ import { Sequelize } from 'sequelize-typescript'
 
 describe('Create product use case integration tests', () => {
   let sequelize: Sequelize
-  let productRepository: ProductRepository
+  let repository: ProductRepository
+  let usecase: CreateProductUseCase
+  let input_a: InputCreateProductDto
+  let input_b: InputCreateProductDto
 
   beforeEach(async () => {
     sequelize = createSequelize()
-
     sequelize.addModels([ProductModel])
     await sequelize.sync()
 
-    productRepository = new ProductRepository()
+    repository = new ProductRepository()
+    usecase = new CreateProductUseCase(repository)
+
+    input_a = {
+      type: ProductType.A,
+      name: 'Product 1',
+      price: 10,
+    }
+
+    input_b = {
+      type: ProductType.B,
+      name: 'Product 2',
+      price: 20,
+    }
   })
 
   afterEach(async () => {
@@ -25,21 +40,11 @@ describe('Create product use case integration tests', () => {
 
   it('should create a product type A', async () => {
     // Arrange - Given
-    const usecase = new CreateProductUseCase(productRepository)
-
-    const input: InputCreateProductDto = {
-      type: ProductType.A,
-      name: 'Product 1',
-      price: 10,
-    }
 
     // Act - When
-    const output = await usecase.execute(input)
+    const output = await usecase.execute(input_a)
 
     // Assert - Then
-    expect(output).toBeDefined()
-    expect(output.id).toBeDefined()
-
     expect(output).toEqual({
       id: expect.any(String),
       name: 'Product 1',
@@ -49,16 +54,9 @@ describe('Create product use case integration tests', () => {
 
   it('should create a product type B', async () => {
     // Arrange - Given
-    const usecase = new CreateProductUseCase(productRepository)
-
-    const input: InputCreateProductDto = {
-      type: ProductType.B,
-      name: 'Product 2',
-      price: 10,
-    }
 
     // Act - When
-    const output = await usecase.execute(input)
+    const output = await usecase.execute(input_b)
 
     // Assert - Then
     expect(output).toBeDefined()
@@ -67,22 +65,16 @@ describe('Create product use case integration tests', () => {
     expect(output).toEqual({
       id: expect.any(String),
       name: 'Product 2',
-      price: 20,
+      price: 40,
     })
   })
 
   it('should throw an error when name is missing', async () => {
     // Arrange - Given
-    const usecase = new CreateProductUseCase(productRepository)
-
-    const input: InputCreateProductDto = {
-      type: ProductType.B,
-      name: '',
-      price: 10,
-    }
+    input_a.name = ''
 
     // Act - When
-    const output = usecase.execute(input)
+    const output = usecase.execute(input_a)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Name is required')
@@ -90,49 +82,31 @@ describe('Create product use case integration tests', () => {
 
   it('should throw an error when price is equal to zero', async () => {
     // Arrange - Given
-    const usecase = new CreateProductUseCase(productRepository)
-
-    const input: InputCreateProductDto = {
-      type: ProductType.A,
-      name: 'Product 1',
-      price: 0,
-    }
+    input_a.price = 0
 
     // Act - When
-    const output = usecase.execute(input)
+    const output = usecase.execute(input_a)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Price must be greater than zero')
   })
 
   it('should throw an error when price is less than zero', async () => {
-    // Arrange - Given
-    const usecase = new CreateProductUseCase(productRepository)
-
-    const input: InputCreateProductDto = {
-      type: ProductType.A,
-      name: 'Product 1',
-      price: -10,
-    }
+    input_a.price = -10
 
     // Act - When
-    const output = usecase.execute(input)
+    const output = usecase.execute(input_a)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Price must be greater than zero')
   })
 
   it('should throw an error when type is missing', async () => {
-    const usecase = new CreateProductUseCase(productRepository)
-
-    const input: InputCreateProductDto = {
-      type: undefined,
-      name: 'Product 1',
-      price: 10,
-    }
+    // Arrange - Given
+    delete input_a.type
 
     // Act - When
-    const output = usecase.execute(input)
+    const output = usecase.execute(input_a)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Invalid product type')

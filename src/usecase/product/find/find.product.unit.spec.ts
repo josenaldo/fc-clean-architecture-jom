@@ -10,22 +10,22 @@ import {
 import FindProductUseCase from '@/usecase/product/find/find.product.usecase'
 
 describe('Find product usecase unit tests ', () => {
+  let productRepository: ProductRepositoryInterface
+  let usecase: FindProductUseCase
   let product_a: ProductInterface
   let product_b: ProductInterface
-  let productRepository: ProductRepositoryInterface
 
   beforeEach(async () => {
+    productRepository = MockRepository()
+    usecase = new FindProductUseCase(productRepository)
+
     product_a = ProductFactory.create(ProductType.A, 'Product A', 100)
     product_b = ProductFactory.create(ProductType.B, 'Product B', 200)
-
-    productRepository = MockRepository()
   })
 
   it('should find a product type A', async () => {
     // Arrange - Given
     productRepository.find = jest.fn().mockResolvedValue(product_a)
-
-    const usecase = new FindProductUseCase(productRepository)
 
     const input: InputFindProductDto = {
       id: product_a.id,
@@ -48,8 +48,6 @@ describe('Find product usecase unit tests ', () => {
   it('should find a product type B', async () => {
     // Arrange - Given
     productRepository.find = jest.fn().mockResolvedValue(product_b)
-
-    const usecase = new FindProductUseCase(productRepository)
 
     const input: InputFindProductDto = {
       id: product_b.id,
@@ -75,8 +73,6 @@ describe('Find product usecase unit tests ', () => {
       .fn()
       .mockRejectedValue(new Error('Product not found'))
 
-    const usecase = new FindProductUseCase(productRepository)
-
     const input: InputFindProductDto = {
       id: '123',
     }
@@ -97,8 +93,6 @@ describe('Find product usecase unit tests ', () => {
     'should throw an error when id is $label',
     async ({ id, label, expected }) => {
       // Arrange - Given
-      const usecase = new FindProductUseCase(productRepository)
-
       const input: InputFindProductDto = {
         id: id,
       }

@@ -1,5 +1,5 @@
-import Product from '@/domain/product/entity/product'
 import ProductInterface from '@/domain/product/entity/product.interface'
+import ProductFactory from '@/domain/product/factory/product.factory'
 import ProductRepositoryInterface from '@/domain/product/repository/product_repository.interface'
 import ProductModel from '@/infrastructure/product/repository/sequelize/product.model'
 
@@ -36,6 +36,6 @@ export default class ProductRepository implements ProductRepositoryInterface {
   }
 
   private modelToEntity(model: ProductModel): ProductInterface {
-    return new Product(model.id, model.name, model.price)
+    return ProductFactory.restore(model.type, model.id, model.name, model.price)
   }
 }

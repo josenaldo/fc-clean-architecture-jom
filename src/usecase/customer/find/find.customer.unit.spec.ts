@@ -1,4 +1,5 @@
 import Customer from '@/domain/customer/entity/customer'
+import CustomerFactory from '@/domain/customer/factory/customer.factory'
 import Address from '@/domain/customer/value-object/address'
 import { MockRepository } from '@/test/test.utils'
 import {
@@ -11,14 +12,10 @@ describe('Find customer use case unit tests', () => {
   let customer: Customer
 
   beforeEach(async () => {
-    customer = new Customer('123', 'John Doe')
-    const address = new Address(
-      'Rua Jose Lelis Franca',
-      '1008',
-      '38408234',
-      'Uberlândia'
+    customer = CustomerFactory.createWithAddress(
+      'John Doe',
+      new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
     )
-    customer.changeAddress(address)
   })
 
   afterEach(async () => {})
@@ -38,7 +35,7 @@ describe('Find customer use case unit tests', () => {
 
     // Assert - Then
     const expectedOutput = {
-      id: '123',
+      id: customer.id,
       name: 'John Doe',
       address: {
         street: 'Rua Jose Lelis Franca',

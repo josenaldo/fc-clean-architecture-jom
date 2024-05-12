@@ -17,7 +17,6 @@ describe('Find customer use case integration tests', () => {
 
   beforeEach(async () => {
     sequelize = createSequelize()
-
     sequelize.addModels([CustomerModel])
     await sequelize.sync()
 

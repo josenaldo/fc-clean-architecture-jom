@@ -11,23 +11,24 @@ import { Sequelize } from 'sequelize-typescript'
 
 describe('Update customer use case integration tests', () => {
   let sequelize: Sequelize
-  let customerRepository: CustomerRepositoryInterface
+  let repository: CustomerRepositoryInterface
+  let usecase: UpdateCustomerUseCase
   let customer: Customer
   let input: InputUpdateCustomerDto
 
   beforeEach(async () => {
     sequelize = createSequelize()
-
     sequelize.addModels([CustomerModel])
     await sequelize.sync()
 
-    customerRepository = new CustomerRepository()
+    repository = new CustomerRepository()
+    usecase = new UpdateCustomerUseCase(repository)
 
     customer = CustomerFactory.createWithAddress(
       'John Doe',
       new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
     )
-    await customerRepository.create(customer)
+    await repository.create(customer)
 
     input = {
       id: customer.id,
@@ -47,10 +48,9 @@ describe('Update customer use case integration tests', () => {
 
   it('should update a customer', async () => {
     // Arrange - Given
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     await expect(output).resolves.toEqual(input)
@@ -58,10 +58,10 @@ describe('Update customer use case integration tests', () => {
 
   it('should throw an error when customer not found', async () => {
     // Arrange - Given
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
     input.id = '123'
+
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Customer not found')
@@ -69,11 +69,10 @@ describe('Update customer use case integration tests', () => {
 
   it('should throw an error when new name is empty', async () => {
     // Arrange - Given
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
     input.name = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Name is required')
@@ -81,11 +80,10 @@ describe('Update customer use case integration tests', () => {
 
   it('should throw an error when street is empty', async () => {
     // Arrange - Given
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
     input.address.street = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Street is required')
@@ -93,11 +91,10 @@ describe('Update customer use case integration tests', () => {
 
   it('should throw an error when number is empty', async () => {
     // Arrange - Given
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
     input.address.number = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Number is required')
@@ -105,11 +102,10 @@ describe('Update customer use case integration tests', () => {
 
   it('should throw an error when zipCode is empty', async () => {
     // Arrange - Given
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
     input.address.zipCode = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     await expect(output).rejects.toThrow('Zip code is required')
@@ -117,11 +113,10 @@ describe('Update customer use case integration tests', () => {
 
   it('should throw an error when city is empty', async () => {
     // Arrange - Given
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
     input.address.city = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     await expect(output).rejects.toThrow('City is required')

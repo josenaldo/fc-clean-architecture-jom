@@ -11,5 +11,6 @@ type CustomerResult = {
   }
 }
 export interface OutputListCustomerDto {
-  customers: CustomerResult[]
+  totalCount: number
+  data: CustomerResult[]
 }

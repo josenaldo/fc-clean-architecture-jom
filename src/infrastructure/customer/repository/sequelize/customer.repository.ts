@@ -49,18 +49,20 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
       throw new Error('Customer not found')
     }
 
-    return this.modelToEntity(model)
+    return EntityMapper.toEntity(model)
   }
 
   async findAll(): Promise<Customer[]> {
     const models = await CustomerModel.findAll()
 
     return models.map((model) => {
-      return this.modelToEntity(model)
+      return EntityMapper.toEntity(model)
     })
   }
+}
 
-  private modelToEntity(model: CustomerModel): Customer {
+class EntityMapper {
+  static toEntity(model: CustomerModel): Customer {
     const customer = new Customer(model.id, model.name)
 
     const address = new Address(

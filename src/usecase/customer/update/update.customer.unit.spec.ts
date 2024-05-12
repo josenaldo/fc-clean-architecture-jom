@@ -1,34 +1,44 @@
+import Customer from '@/domain/customer/entity/customer'
 import CustomerFactory from '@/domain/customer/factory/customer.factory'
+import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
 import Address from '@/domain/customer/value-object/address'
 import { MockRepository } from '@/test/test.utils'
+import { InputUpdateCustomerDto } from '@/usecase/customer/update/update.customer.dto'
 import UpdateCustomerUseCase from '@/usecase/customer/update/update.customer.usecase'
 
 describe('Update customer use case unit tests', () => {
-  const customer = CustomerFactory.createWithAddress(
-    'John Doe',
-    new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
-  )
+  let repository: CustomerRepositoryInterface
+  let usecase: UpdateCustomerUseCase
+  let customer: Customer
+  let input: InputUpdateCustomerDto
 
-  const input = {
-    id: customer.id,
-    name: 'John Doe Updated',
-    address: {
-      street: 'Rua Updated',
-      number: '1010',
-      zipCode: '38408234',
-      city: 'Uberlândia',
-    },
-  }
+  beforeEach(async () => {
+    repository = MockRepository()
+    usecase = new UpdateCustomerUseCase(repository)
+
+    customer = CustomerFactory.createWithAddress(
+      'John Doe',
+      new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
+    )
+
+    input = {
+      id: customer.id,
+      name: 'John Doe Updated',
+      address: {
+        street: 'Rua Updated',
+        number: '1010',
+        zipCode: '38408234',
+        city: 'Uberlândia',
+      },
+    }
+  })
 
   it('should update a customer', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find.mockReturnValue(Promise.resolve(customer))
-
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
+    repository.find = jest.fn().mockReturnValue(Promise.resolve(customer))
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     expect(output).resolves.toEqual(input)
@@ -36,13 +46,10 @@ describe('Update customer use case unit tests', () => {
 
   it('should throw an error when customer not found', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find.mockReturnValue(Promise.resolve(undefined))
-
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
+    repository.find = jest.fn().mockReturnValue(Promise.resolve(undefined))
 
     // Act - When
-    const output = customerUpdateUseCase.execute(input)
+    const output = usecase.execute(input)
 
     // Assert - Then
     expect(output).rejects.toThrow('Customer not found')
@@ -50,18 +57,11 @@ describe('Update customer use case unit tests', () => {
 
   it('should throw an error when new name is empty', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find.mockReturnValue(Promise.resolve(customer))
-
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
-
-    const inputEmptyName = {
-      ...input,
-      name: '',
-    }
+    repository.find = jest.fn().mockReturnValue(Promise.resolve(customer))
+    input.name = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(inputEmptyName)
+    const output = usecase.execute(input)
 
     // Assert - Then
     expect(output).rejects.toThrow('Name is required')
@@ -69,21 +69,11 @@ describe('Update customer use case unit tests', () => {
 
   it('should throw an error when street is empty', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find.mockReturnValue(Promise.resolve(customer))
-
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
-
-    const inputEmptyAddress = {
-      ...input,
-      address: {
-        ...input.address,
-        street: '',
-      },
-    }
+    repository.find = jest.fn().mockReturnValue(Promise.resolve(customer))
+    input.address.street = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(inputEmptyAddress)
+    const output = usecase.execute(input)
 
     // Assert - Then
     expect(output).rejects.toThrow('Street is required')
@@ -91,21 +81,12 @@ describe('Update customer use case unit tests', () => {
 
   it('should throw an error when number is empty', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find.mockReturnValue(Promise.resolve(customer))
 
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
-
-    const inputEmptyAddress = {
-      ...input,
-      address: {
-        ...input.address,
-        number: '',
-      },
-    }
+    repository.find = jest.fn().mockReturnValue(Promise.resolve(customer))
+    input.address.number = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(inputEmptyAddress)
+    const output = usecase.execute(input)
 
     // Assert - Then
     expect(output).rejects.toThrow('Number is required')
@@ -113,21 +94,12 @@ describe('Update customer use case unit tests', () => {
 
   it('should throw an error when zipCode is empty', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find.mockReturnValue(Promise.resolve(customer))
 
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
-
-    const inputEmptyAddress = {
-      ...input,
-      address: {
-        ...input.address,
-        zipCode: '',
-      },
-    }
+    repository.find = jest.fn().mockReturnValue(Promise.resolve(customer))
+    input.address.zipCode = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(inputEmptyAddress)
+    const output = usecase.execute(input)
 
     // Assert - Then
     expect(output).rejects.toThrow('Zip code is required')
@@ -135,21 +107,11 @@ describe('Update customer use case unit tests', () => {
 
   it('should throw an error when city is empty', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find.mockReturnValue(Promise.resolve(customer))
-
-    const customerUpdateUseCase = new UpdateCustomerUseCase(customerRepository)
-
-    const inputEmptyAddress = {
-      ...input,
-      address: {
-        ...input.address,
-        city: '',
-      },
-    }
+    repository.find = jest.fn().mockReturnValue(Promise.resolve(customer))
+    input.address.city = ''
 
     // Act - When
-    const output = customerUpdateUseCase.execute(inputEmptyAddress)
+    const output = usecase.execute(input)
 
     // Assert - Then
     expect(output).rejects.toThrow('City is required')

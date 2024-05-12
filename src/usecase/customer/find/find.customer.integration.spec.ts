@@ -1,4 +1,5 @@
 import Customer from '@/domain/customer/entity/customer'
+import CustomerFactory from '@/domain/customer/factory/customer.factory'
 import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
 import Address from '@/domain/customer/value-object/address'
 import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
@@ -13,24 +14,24 @@ import { Sequelize } from 'sequelize-typescript'
 
 describe('Find customer use case integration tests', () => {
   let sequelize: Sequelize
-  let customerRepository: CustomerRepositoryInterface
+  let repository: CustomerRepositoryInterface
+  let usecase: FindCustomerUseCase
+  let customer: Customer
 
   beforeEach(async () => {
     sequelize = createSequelize()
     sequelize.addModels([CustomerModel])
     await sequelize.sync()
 
-    const customer = new Customer('123', 'John Doe')
-    const address = new Address(
-      'Rua Jose Lelis Franca',
-      '1008',
-      '38408234',
-      'Uberlândia'
-    )
-    customer.changeAddress(address)
+    repository = new CustomerRepository()
+    usecase = new FindCustomerUseCase(repository)
 
-    customerRepository = new CustomerRepository()
-    customerRepository.create(customer)
+    customer = CustomerFactory.createWithAddress(
+      'John Doe',
+      new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
+    )
+
+    repository.create(customer)
   })
 
   afterEach(async () => {
@@ -39,12 +40,16 @@ describe('Find customer use case integration tests', () => {
 
   it('should find a customer', async () => {
     // Arrange - Given
-    const usecase = new FindCustomerUseCase(customerRepository)
     const input: InputFindCustomerDto = {
-      id: '123',
+      id: customer.id,
     }
+
+    // Act - When
+    const output: OutputFindCustomerDto = await usecase.execute(input)
+
+    // Assert - Then
     const expectedOutput = {
-      id: '123',
+      id: customer.id,
       name: 'John Doe',
       address: {
         street: 'Rua Jose Lelis Franca',
@@ -53,17 +58,11 @@ describe('Find customer use case integration tests', () => {
         city: 'Uberlândia',
       },
     }
-
-    // Act - When
-    const output: OutputFindCustomerDto = await usecase.execute(input)
-
-    // Assert - Then
     expect(output).toStrictEqual(expectedOutput)
   })
 
   it('should not find a customer', () => {
     // Arrange - Given
-    const usecase = new FindCustomerUseCase(customerRepository)
     const input: InputFindCustomerDto = {
       id: '1234',
     }

@@ -1,12 +1,18 @@
+import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
 import { MockRepository } from '@/test/test.utils'
+import { InputCreateCustomerDto } from '@/usecase/customer/create/create.customer.dto'
 import CreateCustomerUseCase from '@/usecase/customer/create/create.customer.usecase'
 
 describe('Create customer use case unit tests', () => {
-  it('should create a customer', async () => {
-    // Arrange - Given
-    const customerRepository = MockRepository()
-    const usecase = new CreateCustomerUseCase(customerRepository)
-    const input = {
+  let repository: CustomerRepositoryInterface
+  let usecase: CreateCustomerUseCase
+  let input: InputCreateCustomerDto
+
+  beforeEach(async () => {
+    repository = MockRepository()
+    usecase = new CreateCustomerUseCase(repository)
+
+    input = {
       name: 'John Doe',
       address: {
         street: 'Rua Jose Lelis Franca',
@@ -15,13 +21,17 @@ describe('Create customer use case unit tests', () => {
         city: 'Uberlândia',
       },
     }
+  })
+
+  it('should create a customer', async () => {
+    // Arrange - Given
 
     // Act - When
     const output = await usecase.execute(input)
 
     // Assert - Then
-    expect(customerRepository.create).toHaveBeenCalledTimes(1)
-    expect(customerRepository.create).toHaveBeenLastCalledWith(
+    expect(repository.create).toHaveBeenCalledTimes(1)
+    expect(repository.create).toHaveBeenLastCalledWith(
       expect.objectContaining({
         _id: expect.any(String),
         _name: 'John Doe',
@@ -47,22 +57,13 @@ describe('Create customer use case unit tests', () => {
 
   it('should throw an erro when name is missing', () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    const usecase = new CreateCustomerUseCase(customerRepository)
-    const input = {
-      name: '',
-      address: {
-        street: 'Rua Jose Lelis Franca',
-        number: '1008',
-        zipCode: '38408234',
-        city: 'Uberlândia',
-      },
-    }
+    input.name = ''
 
     // Act - When
     const output = usecase.execute(input)
 
     // Assert - Then
+    expect(repository.create).toHaveBeenCalledTimes(0)
     expect(output).rejects.toThrow('Name is required')
   })
 })

@@ -33,7 +33,8 @@ class OutputMapper {
     }))
 
     return {
-      customers: customersOutput,
+      totalCount: customersOutput.length,
+      data: customersOutput,
     }
   }
 }

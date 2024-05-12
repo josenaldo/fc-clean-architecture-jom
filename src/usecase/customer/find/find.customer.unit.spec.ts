@@ -1,5 +1,6 @@
 import Customer from '@/domain/customer/entity/customer'
 import CustomerFactory from '@/domain/customer/factory/customer.factory'
+import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
 import Address from '@/domain/customer/value-object/address'
 import { MockRepository } from '@/test/test.utils'
 import {
@@ -9,25 +10,26 @@ import {
 import { FindCustomerUseCase } from '@/usecase/customer/find/find.customer.usecase'
 
 describe('Find customer use case unit tests', () => {
+  let repository: CustomerRepositoryInterface
+  let usecase: FindCustomerUseCase
   let customer: Customer
 
   beforeEach(async () => {
+    repository = MockRepository()
+    usecase = new FindCustomerUseCase(repository)
+
     customer = CustomerFactory.createWithAddress(
       'John Doe',
       new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
     )
   })
 
-  afterEach(async () => {})
-
   it('should find a customer', async () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find = jest.fn().mockResolvedValue(customer)
-    const usecase = new FindCustomerUseCase(customerRepository)
+    repository.find = jest.fn().mockResolvedValue(customer)
 
     const input: InputFindCustomerDto = {
-      id: '123',
+      id: customer.id,
     }
 
     // Act - When
@@ -49,11 +51,9 @@ describe('Find customer use case unit tests', () => {
 
   it('should throw and error when customer not found', async () => {
     // Arrange - Given
-    const customerRepository = MockRepository()
-    customerRepository.find = jest
+    repository.find = jest
       .fn()
       .mockRejectedValue(new Error('Customer not found'))
-    const usecase = new FindCustomerUseCase(customerRepository)
 
     const input: InputFindCustomerDto = {
       id: '123',

@@ -10,17 +10,27 @@ import { Sequelize } from 'sequelize-typescript'
 
 describe('List customers use case integration tests', () => {
   let sequelize: Sequelize
-  let customerRepository: CustomerRepositoryInterface
+  let repository: CustomerRepositoryInterface
+  let usecase: ListCustomerUseCase
   let customer1: Customer
   let customer2: Customer
 
   beforeEach(async () => {
     sequelize = createSequelize()
-
     sequelize.addModels([CustomerModel])
     await sequelize.sync()
 
-    customerRepository = new CustomerRepository()
+    repository = new CustomerRepository()
+    usecase = new ListCustomerUseCase(repository)
+
+    customer1 = CustomerFactory.createWithAddress(
+      'John Doe',
+      new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
+    )
+    customer2 = CustomerFactory.createWithAddress(
+      'Jane Doe',
+      new Address('Rua Jose Lelis Franca', '1020', '38408234', 'Uberlândia')
+    )
   })
 
   afterEach(async () => {
@@ -29,62 +39,48 @@ describe('List customers use case integration tests', () => {
 
   it('should list the customers', async () => {
     // Arrange - Given
-    customer1 = CustomerFactory.createWithAddress(
-      'John Doe',
-      new Address('Rua Jose Lelis Franca', '1008', '38408234', 'Uberlândia')
-    )
-    customerRepository.create(customer1)
-
-    customer2 = CustomerFactory.createWithAddress(
-      'Jane Doe',
-      new Address('Rua Jose Lelis Franca', '1020', '38408234', 'Uberlândia')
-    )
-    customerRepository.create(customer2)
-
-    const listCustomerUseCase = new ListCustomerUseCase(customerRepository)
+    repository.create(customer1)
+    repository.create(customer2)
 
     // Act - When
-    const output = await listCustomerUseCase.execute({})
+    const output = await usecase.execute({})
 
     // Assert - Then
-    expect(output.customers).toBeDefined()
-    expect(output.customers).toHaveLength(2)
-    expect(output).toEqual({
-      customers: [
-        {
-          id: customer1.id,
-          name: customer1.name,
-          address: {
-            street: customer1.address.street,
-            number: customer1.address.number,
-            zipCode: customer1.address.zipCode,
-            city: customer1.address.city,
-          },
+    expect(output.totalCount).toBe(2)
+    expect(output.data).toBeDefined()
+    expect(output.data).toHaveLength(2)
+    expect(output.data).toEqual([
+      {
+        id: customer1.id,
+        name: customer1.name,
+        address: {
+          street: customer1.address.street,
+          number: customer1.address.number,
+          zipCode: customer1.address.zipCode,
+          city: customer1.address.city,
         },
-        {
-          id: customer2.id,
-          name: customer2.name,
-          address: {
-            street: customer2.address.street,
-            number: customer2.address.number,
-            zipCode: customer2.address.zipCode,
-            city: customer2.address.city,
-          },
+      },
+      {
+        id: customer2.id,
+        name: customer2.name,
+        address: {
+          street: customer2.address.street,
+          number: customer2.address.number,
+          zipCode: customer2.address.zipCode,
+          city: customer2.address.city,
         },
-      ],
-    })
+      },
+    ])
   })
 
   it('should return a empty list when there is no customers', async () => {
     // Arrange - Given
-    const listCustomerUseCase = new ListCustomerUseCase(customerRepository)
-
     // Act - When
-    const output = await listCustomerUseCase.execute({})
+    const output = await usecase.execute({})
 
     // Assert - Then
-    expect(output.customers).toBeDefined()
-    expect(output.customers).toHaveLength(0)
-    expect(output).toEqual({ customers: [] })
+    expect(output.totalCount).toBe(0)
+    expect(output.data).toBeDefined()
+    expect(output.data).toHaveLength(0)
   })
 })

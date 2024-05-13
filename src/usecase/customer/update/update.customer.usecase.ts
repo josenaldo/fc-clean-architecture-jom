@@ -6,18 +6,18 @@ import {
 } from '@/usecase/customer/update/update.customer.dto'
 
 export default class UpdateCustomerUseCase {
-  private customerRepository: CustomerRepositoryInterface
+  private repository: CustomerRepositoryInterface
 
-  constructor(customerRepository: CustomerRepositoryInterface) {
-    this.customerRepository = customerRepository
+  constructor(repository: CustomerRepositoryInterface) {
+    this.repository = repository
   }
 
   async execute(
     input: InputUpdateCustomerDto
   ): Promise<OutputUpdateCustomerDto> {
-    const customer = await this.customerRepository.find(input.id)
+    const customer = await this.repository.find(input.id)
 
-    if (customer === undefined) {
+    if (!customer) {
       throw new Error('Customer not found')
     }
 
@@ -31,7 +31,7 @@ export default class UpdateCustomerUseCase {
     )
     customer.changeAddress(address)
 
-    await this.customerRepository.update(customer)
+    await this.repository.update(customer)
 
     return {
       id: customer.id,

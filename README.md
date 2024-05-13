@@ -145,6 +145,14 @@ To compile the project, run the following command:
 npx tsc
 ```
 
+## Apis
+
+To create REST APIs, the following libraries can be used:
+
+- [Express](https://expressjs.com/)
+- [Express Types](https://www.npmjs.com/package/@types/express)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+
 ## References
 
 - [TypeScript](https://www.typescriptlang.org/)

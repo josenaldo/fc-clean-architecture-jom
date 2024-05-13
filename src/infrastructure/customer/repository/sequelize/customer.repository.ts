@@ -1,4 +1,5 @@
 import Customer from '@/domain/customer/entity/customer'
+import CustomerFactory from '@/domain/customer/factory/customer.factory'
 import CustomerRepositoryInterface from '@/domain/customer/repository/customer_repository.interface'
 import Address from '@/domain/customer/value-object/address'
 import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
@@ -63,19 +64,20 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
 
 class EntityMapper {
   static toEntity(model: CustomerModel): Customer {
-    const customer = new Customer(model.id, model.name)
-
     const address = new Address(
       model.street,
       model.number,
       model.zipCode,
       model.city
     )
-    customer.changeAddress(address)
 
-    if (model.active) {
-      customer.activate()
-    }
+    const customer = CustomerFactory.restore(
+      model.id,
+      model.name,
+      model.active,
+      model.rewardPoints,
+      address
+    )
 
     return customer
   }

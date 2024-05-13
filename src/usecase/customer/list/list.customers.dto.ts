@@ -1,4 +1,4 @@
-export interface InputListCustomerDto {}
+export interface InputListCustomersDto {}
 
 type CustomerResult = {
   id: string
@@ -10,7 +10,7 @@ type CustomerResult = {
     city: string
   }
 }
-export interface OutputListCustomerDto {
+export interface OutputListCustomersDto {
   totalCount: number
   data: CustomerResult[]
 }

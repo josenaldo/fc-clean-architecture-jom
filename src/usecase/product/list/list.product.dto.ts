@@ -1,4 +1,4 @@
-export interface InputListProductDto {}
+export interface InputListProductsDto {}
 
 type ProductResult = {
   id: string
@@ -7,7 +7,7 @@ type ProductResult = {
   type: string
 }
 
-export interface OutputListProductDto {
+export interface OutputListProductsDto {
   totalCount: number
   data: ProductResult[]
 }

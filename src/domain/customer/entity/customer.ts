@@ -7,9 +7,28 @@ export default class Customer {
   private _active: boolean = false
   private _rewardPoints: number = 0
 
-  constructor(id: string, name: string) {
+  constructor(
+    id: string,
+    name: string,
+    active?: boolean,
+    rewardPoints?: number,
+    address?: Address
+  ) {
     this._id = id
     this._name = name
+
+    if (active !== undefined) {
+      this._active = active
+    }
+
+    if (rewardPoints !== undefined) {
+      this._rewardPoints = rewardPoints
+    }
+
+    if (address !== undefined) {
+      this._address = address
+    }
+
     this.validate()
   }
 

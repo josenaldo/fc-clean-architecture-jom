@@ -12,4 +12,16 @@ export default class CustomerFactory {
     customer.changeAddress(address)
     return customer
   }
+
+  public static restore(
+    id: string,
+    name: string,
+    active: boolean,
+    rewardPoints: number,
+    address: Address
+  ): Customer {
+    const customer = new Customer(id, name, active, rewardPoints, address)
+
+    return customer
+  }
 }

@@ -26,16 +26,18 @@ export default class ProductRepository implements ProductRepositoryInterface {
       throw new Error('Product not found')
     }
 
-    return this.modelToEntity(model)
+    return EntityMapper.toEntity(model)
   }
 
   async findAll(): Promise<ProductInterface[]> {
     const models = await ProductModel.findAll()
 
-    return models.map((model) => this.modelToEntity(model))
+    return models.map((model) => EntityMapper.toEntity(model))
   }
+}
 
-  private modelToEntity(model: ProductModel): ProductInterface {
+class EntityMapper {
+  static toEntity(model: ProductModel): ProductInterface {
     return ProductFactory.restore(model.type, model.id, model.name, model.price)
   }
 }

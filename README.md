@@ -165,3 +165,9 @@ To create REST APIs, the following libraries can be used:
 - [Node.js](https://nodejs.org/)
 - [NPM](https://www.npmjs.com/)
 - [Git](https://git-scm.com/)
+
+## Troubleshooting
+
+To resolve the issue with ts-node and `ERR_UNKNOWN_FILE_EXTENSION`, check the following link:
+
+<https://stackoverflow.com/questions/71571684/ts-node-with-tsconfig-paths-wont-work-when-using-esm>

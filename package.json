@@ -4,7 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --exec ts-node -- --esm src/infrastructure/api/server.ts",
+    "dev": "nodemon src/infrastructure/api/server.ts",
     "test": "npm run tsc && jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -26,6 +26,7 @@
     "sqlite3": "^5.1.7",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.7.0"
   },

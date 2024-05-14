@@ -4,6 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "dev": "nodemon --exec ts-node -- --esm src/infrastructure/api/server.ts",
     "test": "npm run tsc && jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -19,6 +20,7 @@
     "@types/uuid": "^9.0.8",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "esm": "^3.2.25",
     "jest": "^29.7.0",
     "prettier": "^3.2.5",
     "sqlite3": "^5.1.7",
@@ -31,6 +33,7 @@
     "@types/express": "^4.17.21",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "nodemon": "^3.1.0",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.3",
     "sequelize-typescript": "^2.1.6",

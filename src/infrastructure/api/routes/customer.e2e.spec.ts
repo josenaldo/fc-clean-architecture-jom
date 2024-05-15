@@ -1,6 +1,5 @@
 import { app } from '@/infrastructure/api/express'
 import CustomerModel from '@/infrastructure/customer/repository/sequelize/customer.model'
-import ProductModel from '@/infrastructure/product/repository/sequelize/product.model'
 import { createSequelize } from '@/test/test.utils'
 import { Sequelize } from 'sequelize-typescript'
 import supertest from 'supertest'
@@ -12,7 +11,7 @@ describe('Customer E2E tests', () => {
 
   beforeEach(async () => {
     sequelize = createSequelize()
-    sequelize.addModels([CustomerModel, ProductModel])
+    sequelize.addModels([CustomerModel])
     await sequelize.sync({ force: true })
 
     request = supertest(app)

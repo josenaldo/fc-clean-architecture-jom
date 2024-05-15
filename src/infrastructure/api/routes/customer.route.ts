@@ -1,5 +1,8 @@
 import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
-import { OutputCreateCustomerDto } from '@/usecase/customer/create/create.customer.dto'
+import {
+  InputCreateCustomerDto,
+  OutputCreateCustomerDto,
+} from '@/usecase/customer/create/create.customer.dto'
 import CreateCustomerUseCase from '@/usecase/customer/create/create.customer.usecase'
 import {
   InputFindCustomerDto,
@@ -53,7 +56,7 @@ customerRoute.post('/', async (req: Request, res: Response) => {
   const usecase = new CreateCustomerUseCase(repository)
 
   try {
-    const customerDto = {
+    const customerDto: InputCreateCustomerDto = {
       name: req.body.name,
       address: {
         street: req.body.address.street,

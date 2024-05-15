@@ -47,6 +47,7 @@ describe('Create product use case unit test', () => {
       id: expect.any(String),
       name: 'Product 1',
       price: 10,
+      type: ProductType.A,
     })
   })
 
@@ -70,6 +71,7 @@ describe('Create product use case unit test', () => {
       id: expect.any(String),
       name: 'Product 2',
       price: 40,
+      type: ProductType.B,
     })
   })
 

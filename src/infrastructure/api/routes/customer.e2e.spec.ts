@@ -99,7 +99,7 @@ describe('Customer E2E tests', () => {
     expect(findResponse.body).toEqual(createResponse.body)
   })
 
-  it('should return 404 when customer is not found', async () => {
+  it('should return 404 when finding a customer that does not exists', async () => {
     // Act - When
     const response = await request.get('/customers/1').send()
 
@@ -142,5 +142,92 @@ describe('Customer E2E tests', () => {
 
     // Assert - Then
     expect(response.status).toBe(500)
+  })
+
+  it('should update a customer', async () => {
+    // Arrange - Given
+    const requestBody = {
+      name: 'John Doe',
+      address: {
+        street: 'Rua Jose Lelis Franca',
+        number: '1008',
+        zipCode: '38408234',
+        city: 'Uberlândia',
+      },
+    }
+    const createResponse = await request.post('/customers').send(requestBody)
+    const customerId = createResponse.body.id
+
+    const updateRequestBody = {
+      name: 'John Doe Updated',
+      address: {
+        street: 'Rua Jose Lelis Franca Updated',
+        number: '1010',
+        zipCode: '38408234',
+        city: 'Uberlândia',
+      },
+    }
+
+    // Act - When
+    const updateResponse = await request
+      .put(`/customers/${customerId}`)
+      .send(updateRequestBody)
+
+    // Assert - Then
+    expect(updateResponse.status).toBe(200)
+    expect(updateResponse.body).toEqual({
+      id: customerId,
+      ...updateRequestBody,
+    })
+  })
+
+  it('should return 400 when updating a customer with invalid data', async () => {
+    // Arrange - Given
+    const requestBody = {
+      name: 'John Doe',
+      address: {
+        street: 'Rua Jose Lelis Franca',
+        number: '1008',
+        zipCode: '38408234',
+        city: 'Uberlândia',
+      },
+    }
+    const createResponse = await request.post('/customers').send(requestBody)
+    const customerId = createResponse.body.id
+
+    const updateRequestBody = {
+      name: 'John Doe Updated',
+    }
+
+    // Act - When
+    const updateResponse = await request
+      .put(`/customers/${customerId}`)
+      .send(updateRequestBody)
+
+    // Assert - Then
+    expect(updateResponse.status).toBe(400)
+    expect(updateResponse.body.message).toBe('Invalid data')
+  })
+
+  it('should return 404 when updating a customer that does not exists', async () => {
+    // Arrange - Given
+    const updateRequestBody = {
+      name: 'John Doe Updated',
+      address: {
+        street: 'Rua Jose Lelis Franca Updated',
+        number: '1010',
+        zipCode: '38408234',
+        city: 'Uberlândia',
+      },
+    }
+
+    // Act - When
+    const updateResponse = await request
+      .put('/customers/1')
+      .send(updateRequestBody)
+
+    // Assert - Then
+    expect(updateResponse.status).toBe(404)
+    expect(updateResponse.body.message).toBe('Customer not found')
   })
 })

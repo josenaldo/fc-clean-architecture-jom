@@ -23,20 +23,33 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
   }
 
   async update(customer: Customer): Promise<void> {
-    await CustomerModel.update(
-      {
-        name: customer.name,
-        street: customer.address.street,
-        number: customer.address.number,
-        zipCode: customer.address.zipCode,
-        city: customer.address.city,
-        active: customer.isActive(),
-        rewardPoints: customer.rewardPoints,
-      },
-      {
-        where: { id: customer.id },
+    try {
+      await CustomerModel.update(
+        {
+          name: customer.name,
+          street: customer.address.street,
+          number: customer.address.number,
+          zipCode: customer.address.zipCode,
+          city: customer.address.city,
+          active: customer.isActive(),
+          rewardPoints: customer.rewardPoints,
+        },
+        {
+          where: { id: customer.id },
+        }
+      )
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.name === 'SequelizeEmptyResultError'
+      ) {
+        throw new Error('Customer not found')
       }
-    )
+
+      if (error instanceof Error) {
+        throw error
+      }
+    }
   }
 
   async find(id: string): Promise<Customer> {

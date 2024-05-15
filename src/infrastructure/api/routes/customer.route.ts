@@ -1,6 +1,11 @@
 import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
 import { OutputCreateCustomerDto } from '@/usecase/customer/create/create.customer.dto'
 import CreateCustomerUseCase from '@/usecase/customer/create/create.customer.usecase'
+import {
+  InputFindCustomerDto,
+  OutputFindCustomerDto,
+} from '@/usecase/customer/find/find.customer.dto'
+import { FindCustomerUseCase } from '@/usecase/customer/find/find.customer.usecase'
 import { OutputListCustomersDto } from '@/usecase/customer/list/list.customers.dto'
 import ListCustomerUseCase from '@/usecase/customer/list/list.customers.usecase'
 import express, { Request, Response } from 'express'
@@ -17,6 +22,24 @@ customerRoute.get('/', async (req: Request, res: Response) => {
     return res.status(200).json(output)
   } catch (error) {
     return res.status(500).json(error)
+  }
+})
+
+customerRoute.get('/:id', async (req: Request, res: Response) => {
+  const repository = new CustomerRepository()
+  const usecase = new FindCustomerUseCase(repository)
+
+  try {
+    const input: InputFindCustomerDto = {
+      id: req.params.id,
+    }
+    const output: OutputFindCustomerDto = await usecase.execute(input)
+
+    return res.status(200).json(output)
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Customer not found')
+      return res.status(404).json({ message: error.message })
+    return res.status(500).json({ message: error })
   }
 })
 

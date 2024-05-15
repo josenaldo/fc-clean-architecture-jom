@@ -22,6 +22,15 @@ describe('Customer unit testes', () => {
     expect(f).toThrow('customer: Name is required')
   })
 
+  it('should throw error when name and id are empty ', () => {
+    const f = () => {
+      const customer = new Customer('', '') // NOSONAR
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('customer: ID is required, Name is required')
+  })
+
   it('should change name', () => {
     // Arrange - Given
     const customer = new Customer('1', 'John Doe')

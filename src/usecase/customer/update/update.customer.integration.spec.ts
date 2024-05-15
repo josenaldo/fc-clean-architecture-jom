@@ -75,7 +75,7 @@ describe('Update customer use case integration tests', () => {
     const output = usecase.execute(input)
 
     // Assert - Then
-    await expect(output).rejects.toThrow('Name is required')
+    await expect(output).rejects.toThrow('customer: Name is required')
   })
 
   it('should throw an error when street is empty', async () => {

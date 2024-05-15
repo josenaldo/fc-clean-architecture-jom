@@ -102,4 +102,25 @@ describe('Notification unit tests', () => {
 
     expect(notification.hasErrors('Order')).toBe(false)
   })
+
+  it('should get all errors props', async () => {
+    const notification = new Notification()
+
+    const error1 = {
+      message: 'error message',
+      context: 'Customer',
+    }
+
+    const error2 = {
+      message: 'error message',
+      context: 'Order',
+    }
+
+    notification.addError(error1)
+    notification.addError(error2)
+
+    expect(notification.getErrors()).toEqual([error1, error2])
+    expect(notification.getErrors('Customer')).toEqual([error1])
+    expect(notification.getErrors('Order')).toEqual([error2])
+  })
 })

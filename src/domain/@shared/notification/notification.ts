@@ -1,44 +1,55 @@
-export type NotificationError = {
+export type NotificationErrorProps = {
   message: string
   context: string
 }
 
 export default class Notification {
-  private errors: NotificationError[] = []
+  private _errors: NotificationErrorProps[] = []
 
   hasErrors(context?: string): boolean {
     if (context) {
-      return this.errors.some((error) => error.context === context)
+      return this._errors.some((error) => error.context === context)
     }
-    return this.errors.length > 0
+    return this._errors.length > 0
   }
 
-  addError(error: NotificationError): void {
-    this.errors.push(error)
+  getErrors(context?: string): NotificationErrorProps[] {
+    return this._errors.filter((error) => !context || error.context === context)
+  }
+
+  addError(error: NotificationErrorProps): void {
+    this._errors.push(error)
   }
 
   messages(context?: string): string {
+    return Notification.messages(this._errors, context)
+  }
+
+  static messages(errors: NotificationErrorProps[], context?: string): string {
     let messagesByContext: {
       [key: string]: string[]
-    } = this.extractMessagesByContext(context)
+    } = Notification.extractMessagesByContext(errors, context)
 
     const entries = Object.entries(messagesByContext)
 
     let messages = ''
 
-    messages = this.convertMessagesByContextToString(entries, messages)
+    messages = Notification.convertMessagesByContextToString(entries, messages)
 
     return messages
   }
 
-  private extractMessagesByContext(context: string): {
+  private static extractMessagesByContext(
+    errors: NotificationErrorProps[],
+    context?: string
+  ): {
     [key: string]: string[]
   } {
     let messagesByContext: {
       [key: string]: string[]
     } = {}
 
-    this.errors
+    errors
       .filter((error) => !context || error.context === context)
       .forEach((error) => {
         if (!messagesByContext[error.context]) {
@@ -49,7 +60,7 @@ export default class Notification {
     return messagesByContext
   }
 
-  private convertMessagesByContextToString(
+  private static convertMessagesByContextToString(
     entries: [string, string[]][],
     messages: string
   ) {

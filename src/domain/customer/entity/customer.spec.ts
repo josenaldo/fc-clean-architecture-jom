@@ -1,18 +1,25 @@
 /* eslint @typescript-eslint/no-unused-vars: 0 */
+import NotificationError from '@/domain/@shared/notification/notification.error'
 import Customer from '@/domain/customer/entity/customer'
 import Address from '@/domain/customer/value-object/address'
 
 describe('Customer unit testes', () => {
   it('should throw error when id is empty', () => {
-    expect(() => {
+    const f = () => {
       const customer = new Customer('', 'John Doe') // NOSONAR
-    }).toThrow('ID is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('customer: ID is required')
   })
 
   it('should throw error when name is empty', () => {
-    expect(() => {
+    const f = () => {
       const customer = new Customer('1', '') // NOSONAR
-    }).toThrow('Name is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('customer: Name is required')
   })
 
   it('should change name', () => {
@@ -28,9 +35,13 @@ describe('Customer unit testes', () => {
 
   it('should throw error when change name to empty', () => {
     const customer = new Customer('1', 'John Doe')
-    expect(() => {
+
+    const f = () => {
       customer.changeName('')
-    }).toThrow('Name is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('customer: Name is required')
   })
 
   it('should activate customer', () => {

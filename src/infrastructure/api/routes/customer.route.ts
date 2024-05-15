@@ -1,11 +1,26 @@
 import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
 import { OutputCreateCustomerDto } from '@/usecase/customer/create/create.customer.dto'
 import CreateCustomerUseCase from '@/usecase/customer/create/create.customer.usecase'
+import { OutputListCustomersDto } from '@/usecase/customer/list/list.customers.dto'
+import ListCustomerUseCase from '@/usecase/customer/list/list.customers.usecase'
 import express, { Request, Response } from 'express'
 
 export const customerRoute = express.Router()
 
-customerRoute.post('/customers', async (req: Request, res: Response) => {
+customerRoute.get('/', async (req: Request, res: Response) => {
+  const repository = new CustomerRepository()
+  const usecase = new ListCustomerUseCase(repository)
+
+  try {
+    const output: OutputListCustomersDto = await usecase.execute({})
+
+    return res.status(200).json(output)
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+})
+
+customerRoute.post('/', async (req: Request, res: Response) => {
   const repository = new CustomerRepository()
   const usecase = new CreateCustomerUseCase(repository)
 

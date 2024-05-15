@@ -6,7 +6,7 @@ import { Sequelize } from 'sequelize-typescript'
 
 export const app: Express = express()
 app.use(express.json())
-app.use(customerRoute)
+app.use('/customers', customerRoute)
 
 export let sequelize: Sequelize
 

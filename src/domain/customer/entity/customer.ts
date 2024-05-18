@@ -1,5 +1,4 @@
 import Entity from '@/domain/@shared/entity/entity.abstract'
-import NotificationError from '@/domain/@shared/notification/notification.error'
 import Address from '@/domain/customer/value-object/address'
 
 export default class Customer extends Entity {
@@ -40,22 +39,14 @@ export default class Customer extends Entity {
 
   validate() {
     if (this.id.length === 0) {
-      this._notification.addError({
-        message: 'ID is required',
-        context: this.contextName,
-      })
+      this.addNotificationError('ID is required')
     }
 
     if (this._name.length === 0) {
-      this._notification.addError({
-        message: 'Name is required',
-        context: this.contextName,
-      })
+      this.addNotificationError('Name is required')
     }
 
-    if (this.hasNotificationErrors) {
-      throw new NotificationError(this.notificationErrors)
-    }
+    this.throwIfHasNotificationErrors()
   }
 
   get name() {

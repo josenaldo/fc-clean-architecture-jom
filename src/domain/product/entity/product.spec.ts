@@ -1,48 +1,71 @@
 /* eslint @typescript-eslint/no-unused-vars: 0 */
 
+import NotificationError from '@/domain/@shared/notification/notification.error'
 import Product from '@/domain/product/entity/product'
+import ProductB from '@/domain/product/entity/product_b'
 
 describe('Product unit tests', () => {
   it('should throw an error when id is empty', () => {
-    expect(() => {
+    const f = () => {
       const product = new Product('', 'Product 1', 100) // NOSONAR
-    }).toThrow('ID is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: ID is required')
   })
 
   it('should throw an error when name is empty', () => {
-    expect(() => {
+    const f = () => {
       const product = new Product('1', '', 100) // NOSONAR
-    }).toThrow('Name is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Name is required')
   })
 
   it('should throw an error when name is only spaces', () => {
-    expect(() => {
+    const f = () => {
       const product = new Product('1', '   ', 100) // NOSONAR
-    }).toThrow('Name is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Name is required')
   })
 
   it('should throw an error when price is zero', () => {
-    expect(() => {
+    const f = () => {
       const product = new Product('1', 'Product 1', 0) // NOSONAR
-    }).toThrow('Price must be greater than zero')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be greater than zero')
   })
 
   it('should throw an error when price is negative', () => {
-    expect(() => {
+    const f = () => {
       const product = new Product('1', 'Product 1', -1) // NOSONAR
-    }).toThrow('Price must be greater than zero')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be greater than zero')
   })
 
   it('should throw an error when price is not a number', () => {
-    expect(() => {
+    const f = () => {
       const product = new Product('1', 'Product 1', NaN) // NOSONAR
-    }).toThrow('Price must be a number')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be a number')
   })
 
   it('should throw an error when price is not a finite number', () => {
-    expect(() => {
+    const f = () => {
       const product = new Product('1', 'Product 1', Infinity) // NOSONAR
-    }).toThrow('Price must be a finite number')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be a finite number')
   })
 
   it('should change name', () => {
@@ -58,16 +81,23 @@ describe('Product unit tests', () => {
 
   it('should throw an error when changeName to empty', () => {
     const product = new Product('1', 'Product 1', 100)
-    expect(() => {
+
+    const f = () => {
       product.changeName('')
-    }).toThrow('Name is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Name is required')
   })
 
   it('should throw an error when changeName to only spaces', () => {
     const product = new Product('1', 'Product 1', 100)
-    expect(() => {
+    const f = () => {
       product.changeName('   ')
-    }).toThrow('Name is required')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Name is required')
   })
 
   it('should change price', () => {
@@ -78,29 +108,63 @@ describe('Product unit tests', () => {
 
   it('should throw an error when changePrice to zero', () => {
     const product = new Product('1', 'Product 1', 100)
-    expect(() => {
+    const f = () => {
       product.changePrice(0)
-    }).toThrow('Price must be greater than zero')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be greater than zero')
   })
 
   it('should throw an error when changePrice to negative', () => {
     const product = new Product('1', 'Product 1', 100)
-    expect(() => {
+    const f = () => {
       product.changePrice(-1)
-    }).toThrow('Price must be greater than zero')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be greater than zero')
   })
 
   it('should throw an error when changePrice to NaN', () => {
     const product = new Product('1', 'Product 1', 100)
-    expect(() => {
+    const f = () => {
       product.changePrice(NaN)
-    }).toThrow('Price must be a number')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be a number')
   })
 
   it('should throw an error when changePrice to Infinity', () => {
     const product = new Product('1', 'Product 1', 100)
-    expect(() => {
+    const f = () => {
       product.changePrice(Infinity)
-    }).toThrow('Price must be a finite number')
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow('product a: Price must be a finite number')
+  })
+
+  it('should throw an error with some notifications for product a', () => {
+    const f = () => {
+      const product = new Product('', '', -1)
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow(
+      'product a: ID is required, Name is required, Price must be greater than zero'
+    )
+  })
+
+  it('should throw an error with some notifications for product b', () => {
+    const f = () => {
+      const product = new ProductB('', '', 0)
+    }
+
+    expect(f).toThrow(NotificationError)
+    expect(f).toThrow(
+      'product b: ID is required, Name is required, Price must be greater than zero'
+    )
   })
 })

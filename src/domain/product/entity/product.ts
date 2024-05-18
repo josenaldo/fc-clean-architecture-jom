@@ -1,43 +1,46 @@
+import Entity from '@/domain/@shared/entity/entity.abstract'
 import ProductInterface from '@/domain/product/entity/product.interface'
 import { ProductType } from '@/domain/product/entity/product_type'
 
-export default class Product implements ProductInterface {
+export default class Product extends Entity implements ProductInterface {
   static readonly TYPE: ProductType = ProductType.A
-  private _id: string
   private _name: string
   private _price: number
 
   constructor(id: string, name: string, price: number) {
+    super()
     this._id = id
     this._name = name
     this._price = price
     this.validate()
   }
 
+  get contextName(): string {
+    return 'Product A'
+  }
+
   validate() {
     if (this._id.length === 0) {
-      throw new Error('ID is required')
+      this.addNotificationError('ID is required')
     }
 
     if (this._name.trim().length === 0) {
-      throw new Error('Name is required')
+      this.addNotificationError('Name is required')
     }
 
     if (this._price <= 0) {
-      throw new Error('Price must be greater than zero')
+      this.addNotificationError('Price must be greater than zero')
     }
 
     if (isNaN(this._price)) {
-      throw new Error('Price must be a number')
+      this.addNotificationError('Price must be a number')
     }
 
     if (!isFinite(this._price)) {
-      throw new Error('Price must be a finite number')
+      this.addNotificationError('Price must be a finite number')
     }
-  }
 
-  get id(): string {
-    return this._id
+    this.throwIfHasNotificationErrors()
   }
 
   get name(): string {

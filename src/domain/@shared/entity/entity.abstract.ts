@@ -1,4 +1,5 @@
 import Notification from '@/domain/@shared/notification/notification'
+import NotificationError from '@/domain/@shared/notification/notification.error'
 
 export default abstract class Entity {
   protected _id: string
@@ -29,4 +30,17 @@ export default abstract class Entity {
   }
 
   abstract get contextName(): string
+
+  addNotificationError(message: string) {
+    this._notification.addError({
+      message,
+      context: this.contextName,
+    })
+  }
+
+  throwIfHasNotificationErrors() {
+    if (this.hasNotificationErrors) {
+      throw new NotificationError(this.notificationErrors)
+    }
+  }
 }

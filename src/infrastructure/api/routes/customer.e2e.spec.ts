@@ -66,6 +66,50 @@ describe('Customer E2E tests', () => {
     expect(customer2).toEqual(response2.body)
   })
 
+  it('should list all customers in XML format', async () => {
+    // Arrange - Given
+    const input1 = {
+      name: 'John Doe',
+      address: {
+        street: 'Rua Jose Lelis Franca',
+        number: '1008',
+        zipCode: '38408234',
+        city: 'Uberlândia',
+      },
+    }
+    const input2 = {
+      name: 'Jane Doe',
+      address: {
+        street: 'Rua Jose Lelis Franca',
+        number: '1010',
+        zipCode: '38408234',
+        city: 'Uberlândia',
+      },
+    }
+
+    // Act - When
+    const response1 = await request.post('/customers').send(input1)
+    const response2 = await request.post('/customers').send(input2)
+
+    // Act - When
+    const listResponse = await request
+      .get('/customers')
+      .set('Accept', 'application/xml')
+      .send()
+
+    // Assert - Then
+    expect(listResponse.status).toBe(200)
+    expect(listResponse.type).toBe('application/xml')
+    expect(listResponse.text).toContain(
+      '<?xml version="1.0" encoding="UTF-8"?>'
+    )
+    expect(listResponse.text).toContain('<customers')
+    expect(listResponse.text).toContain('totalCount="2"')
+    expect(listResponse.text).toContain('<customer')
+    expect(listResponse.text).toContain('<name>John Doe</name>')
+    expect(listResponse.text).toContain('<name>Jane Doe</name>')
+  })
+
   it('should return an empty list when there are no customers', async () => {
     // Act - When
     const response = await request.get('/customers').send()

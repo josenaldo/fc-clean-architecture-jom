@@ -1,3 +1,4 @@
+import CustomerPresenter from '@/infrastructure/api/presenters/customer.presenter'
 import CustomerRepository from '@/infrastructure/customer/repository/sequelize/customer.repository'
 import {
   InputCreateCustomerDto,
@@ -27,7 +28,18 @@ customerRoute.get('/', async (req: Request, res: Response) => {
   try {
     const output: OutputListCustomersDto = await usecase.execute({})
 
-    return res.status(200).json(output)
+    // return res.status(200).json(output)
+    res.format({
+      json: () => {
+        res.status(200).json(output)
+      },
+      xml: () => {
+        res.status(200).send(CustomerPresenter.listXml(output))
+      },
+      default: () => {
+        res.status(200).json(output)
+      },
+    })
   } catch (error) {
     return res.status(500).json(error)
   }

@@ -19,6 +19,8 @@ export default class CustomerYupValidator
       e.errors.forEach((error) => {
         entity.addNotificationError(error)
       })
+
+      entity.throwIfHasNotificationErrors()
     }
   }
 }

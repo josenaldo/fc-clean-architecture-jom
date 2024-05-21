@@ -29,7 +29,7 @@ describe('Product unit tests', () => {
     }
 
     expect(f).toThrow(NotificationError)
-    expect(f).toThrow('product a: Name is required')
+    expect(f).toThrow('product a: Name cannot consist solely of spaces')
   })
 
   it('should throw an error when price is zero', () => {
@@ -97,7 +97,7 @@ describe('Product unit tests', () => {
     }
 
     expect(f).toThrow(NotificationError)
-    expect(f).toThrow('product a: Name is required')
+    expect(f).toThrow('product a: Name cannot consist solely of spaces')
   })
 
   it('should change price', () => {
@@ -153,7 +153,7 @@ describe('Product unit tests', () => {
 
     expect(f).toThrow(NotificationError)
     expect(f).toThrow(
-      'product a: ID is required, Name is required, Price must be greater than zero'
+      'product a: ID is required, Name is required, Name cannot consist solely of spaces, Price must be greater than zero'
     )
   })
 
@@ -164,7 +164,7 @@ describe('Product unit tests', () => {
 
     expect(f).toThrow(NotificationError)
     expect(f).toThrow(
-      'product b: ID is required, Name is required, Price must be greater than zero'
+      'product b: ID is required, Name is required, Name cannot consist solely of spaces, Price must be greater than zero'
     )
   })
 })

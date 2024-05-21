@@ -40,8 +40,6 @@ export default class Customer extends Entity {
 
   validate() {
     CustomerValidatorFactory.create().validate(this)
-
-    this.throwIfHasNotificationErrors()
   }
 
   get name() {

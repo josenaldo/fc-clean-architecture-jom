@@ -1,6 +1,7 @@
 import Entity from '@/domain/@shared/entity/entity.abstract'
 import ProductInterface from '@/domain/product/entity/product.interface'
 import { ProductType } from '@/domain/product/entity/product_type'
+import ProductValidatorFactory from '@/domain/product/factory/product.validator.factory'
 
 export default class Product extends Entity implements ProductInterface {
   static readonly TYPE: ProductType = ProductType.A
@@ -20,27 +21,7 @@ export default class Product extends Entity implements ProductInterface {
   }
 
   validate() {
-    if (this._id.length === 0) {
-      this.addNotificationError('ID is required')
-    }
-
-    if (this._name.trim().length === 0) {
-      this.addNotificationError('Name is required')
-    }
-
-    if (this._price <= 0) {
-      this.addNotificationError('Price must be greater than zero')
-    }
-
-    if (isNaN(this._price)) {
-      this.addNotificationError('Price must be a number')
-    }
-
-    if (!isFinite(this._price)) {
-      this.addNotificationError('Price must be a finite number')
-    }
-
-    this.throwIfHasNotificationErrors()
+    ProductValidatorFactory.create(). validate(this)
   }
 
   get name(): string {
